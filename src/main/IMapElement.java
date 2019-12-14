@@ -1,3 +1,3 @@
 public interface IMapElement{
-    Vector2d getPosition();
+    Vector2D getPosition();
 }

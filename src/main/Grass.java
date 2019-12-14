@@ -1,17 +1,17 @@
 public class Grass implements IMapElement{
 
-    private Vector2d position;
+    private Vector2D position;
 
-    public Grass(Vector2d position){
+    public Grass(Vector2D position){
         this.position = position;
     }
 
-    public Vector2d getPosition() {
+    public Vector2D getPosition() {
         return position;
     }
 
     @Override
     public String toString(){
-        return "x";
+        return "*";
     }
 }
