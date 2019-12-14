@@ -1,10 +1,3 @@
-/*Rozmiar mapy (width, height)
-ilość energii początkowej zwierząt (startEnergy)
-ilość energii traconej w każdym dniu (moveEnergy)
-ilość energii zyskiwanej przy zjedzeniu rośliny (plantEnergy)
-proporcje dżungli do sawanny (jugnleRatio)
-*/
-
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
