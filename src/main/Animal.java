@@ -85,6 +85,14 @@ public class Animal implements IMapElement {
         return this.orientation;
     }
 
+    public double getEnergy() {
+        return energy;
+    }
+
+    public Integer[] getGenotype(){
+        return this.genotype;
+    }
+
     private void positionChanged(Vector2D oldPosition, Vector2D newPosition) {
         for (IPositionChangeObserver observer : observersSet) {
             observer.positionChanged(oldPosition, newPosition, this);
@@ -93,10 +101,6 @@ public class Animal implements IMapElement {
 
     public boolean isDead(){
         return (energy <= 0);
-    }
-
-    public double getEnergy() {
-        return energy;
     }
 
     public void eat(double addEnergy){
