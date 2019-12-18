@@ -5,7 +5,7 @@ public class Animal implements IMapElement {
     private Vector2D position;
     private Direction orientation;
     private double energy;
-    private Integer[] genotype;
+    public final Integer[] genotype;
     WorldMap map;
     Set<IPositionChangeObserver> observersSet = new HashSet<>();
 
