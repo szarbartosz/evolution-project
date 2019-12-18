@@ -18,7 +18,7 @@ public class Animal implements IMapElement {
     }
 
     public Animal(Vector2D initialPosition, Integer[] genotype, WorldMap map){
-        this.position = initialPosition;
+        this.position = map.betterPosition(initialPosition);
         this.orientation = Direction.N;
         this.energy = map.startEnergy;
         this.genotype = genotype;
