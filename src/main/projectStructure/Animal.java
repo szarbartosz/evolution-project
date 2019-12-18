@@ -1,3 +1,8 @@
+package projectStructure;
+
+import features.Direction;
+import features.Vector2D;
+
 import java.util.*;
 
 public class Animal implements IMapElement {

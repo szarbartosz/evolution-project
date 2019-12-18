@@ -1,3 +1,5 @@
+package features;
+
 public enum Direction {
     N,
     NE,
@@ -62,7 +64,7 @@ public enum Direction {
                 case "sw": ret[i] = Direction.SW; break;
                 case "w": ret[i] = Direction.W; break;
                 case "nw": ret[i] = Direction.NW; break;
-                default: throw new IllegalArgumentException (args[i] + "  is not legal Direction");
+                default: throw new IllegalArgumentException (args[i] + "  is not legal features.Direction");
             }
         }
         return ret;

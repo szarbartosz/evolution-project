@@ -1,3 +1,7 @@
+package projectStructure;
+
+import features.Vector2D;
+
 import java.util.HashSet;
 
 /**
@@ -13,7 +17,7 @@ public class MapVisualizer {
     private IWorldMap map;
 
     /**
-     * Initializes the MapVisualizer with an instance of map to visualize.
+     * Initializes the projectStructure.MapVisualizer with an instance of map to visualize.
      * @param map
      */
     public MapVisualizer(IWorldMap map) {

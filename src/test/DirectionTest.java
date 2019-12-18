@@ -1,5 +1,7 @@
 import org.junit.Assert;
         import org.junit.Test;
+import features.Direction;
+import features.Vector2D;
 
 public class DirectionTest {
     @Test

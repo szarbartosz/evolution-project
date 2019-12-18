@@ -1,3 +1,7 @@
+package projectStructure;
+
+import features.Vector2D;
+
 import java.util.*;
 
 public class WorldMap implements IWorldMap, IPositionChangeObserver {
@@ -7,8 +11,8 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
     private Map<Vector2D, Grass> grassMap = new HashMap<>();
     private final Vector2D lowerLeft;
     private final Vector2D upperRight;
-    private final Vector2D jungleLowerLeft = new Vector2D(3,3);
-    private final Vector2D jungleUpperRight = new Vector2D(5,5);
+    private Vector2D jungleLowerLeft;
+    private Vector2D jungleUpperRight;
     public final Integer width;
     public final Integer height;
     public final Double startEnergy;
@@ -18,7 +22,7 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
     public MapVisualizer visualizer;
 
     public WorldMap(Vector2D upperRight){
-        this(upperRight, 20.0);
+        this(upperRight, 60.0);
     }
 
     public WorldMap(Vector2D upperRight,Double startEnergy){
@@ -28,7 +32,36 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
         this.height = upperRight.y + 1;
         this.width = upperRight.x + 1;
         this.startEnergy = startEnergy;
+        this.calculateJunglePosition();
 
+    }
+
+    public void calculateJunglePosition(){
+        int jungleWidth = (int) (jungleRatio * width);
+        int jungleHeight = (int) (jungleRatio * height);
+        int jungleLowerLeftX = 0;
+        int jungleLowerLeftY = 0;
+        int jungleUpperRightX = width-1;
+        int jungleUpperRightY = height-1;
+
+        for (int i = 0; i < (width - jungleWidth); i++) {
+            if (i % 2 == 0) {
+                jungleLowerLeftX++;
+            } else {
+                jungleUpperRightX--;
+            }
+        }
+
+        for (int i = 0; i < (height - jungleHeight); i++) {
+            if (i % 2 == 0) {
+                jungleLowerLeftY++;
+            } else {
+                jungleUpperRightY--;
+            }
+        }
+
+        this.jungleLowerLeft = new Vector2D(jungleLowerLeftX,jungleLowerLeftY);
+        this.jungleUpperRight = new Vector2D(jungleUpperRightX,jungleUpperRightY);
     }
 
     @Override
@@ -130,12 +163,12 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
     }
 
     public void generateGrass(){
-        Random r = new Random();
+        Random rand = new Random();
         int iterations = 0;
         int tooManyTimes = (jungleUpperRight.x - jungleLowerLeft.x) * (jungleUpperRight.y - jungleLowerLeft.y);
         while (iterations < tooManyTimes ){
-            int jungleGrassX = r.nextInt(jungleUpperRight.x - jungleLowerLeft.x + 1) + jungleLowerLeft.x;
-            int jungleGrassY = r.nextInt(jungleUpperRight.y - jungleLowerLeft.y + 1) + jungleLowerLeft.y;
+            int jungleGrassX = rand.nextInt(jungleUpperRight.x - jungleLowerLeft.x + 1) + jungleLowerLeft.x;
+            int jungleGrassY = rand.nextInt(jungleUpperRight.y - jungleLowerLeft.y + 1) + jungleLowerLeft.y;
             Vector2D jungleGrassPosition = new Vector2D(jungleGrassX, jungleGrassY);
             if (this.objectAt(jungleGrassPosition) == null){
                 putGrass(new Vector2D(jungleGrassX, jungleGrassY));
@@ -152,7 +185,7 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
 
         while (iterations < tooManyTimes){
             //steppe has 4 segments and following switch chooses one of them
-            switch(r.nextInt(4)){
+            switch(rand.nextInt(4)){
                 case 0:
                     minX = 0;
                     maxX = upperRight.x;
@@ -178,8 +211,8 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
                     maxY = upperRight.y;
                     break;
             }
-            int jungleGrassX = r.nextInt(maxX - minX + 1) + minX;
-            int jungleGrassY = r.nextInt(maxY - minY + 1) + minY;
+            int jungleGrassX = rand.nextInt(maxX - minX + 1) + minX;
+            int jungleGrassY = rand.nextInt(maxY - minY + 1) + minY;
             Vector2D jungleGrassPosition = new Vector2D(jungleGrassX, jungleGrassY);
             if (this.objectAt(jungleGrassPosition) == null){
                 putGrass(new Vector2D(jungleGrassX, jungleGrassY));

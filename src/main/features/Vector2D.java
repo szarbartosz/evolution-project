@@ -1,3 +1,5 @@
+package features;
+
 public class Vector2D {
 
     public final int x;

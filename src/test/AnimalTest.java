@@ -1,5 +1,9 @@
 import org.junit.Assert;
 import org.junit.Test;
+import projectStructure.Animal;
+import features.Direction;
+import features.Vector2D;
+import projectStructure.WorldMap;
 
 import java.util.Arrays;
 

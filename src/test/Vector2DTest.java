@@ -1,5 +1,6 @@
 import org.junit.Assert;
 import org.junit.Test;
+import features.Vector2D;
 
 public class Vector2DTest {
 

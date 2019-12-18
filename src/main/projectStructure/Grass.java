@@ -1,3 +1,7 @@
+package projectStructure;
+
+import features.Vector2D;
+
 public class Grass implements IMapElement {
 
     private Vector2D position;
