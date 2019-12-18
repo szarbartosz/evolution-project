@@ -26,11 +26,34 @@ public class Animal implements IMapElement {
     }
 
     private static Integer[] randomGenotype(){
-        Random r = new Random();
+        Random rand = new Random();
         Integer[] genotype = new Integer[32];
         for (int i = 0; i < 32; i++){
-            genotype[i] = r.nextInt(8);
+            genotype[i] = rand.nextInt(8);
         }
+
+        int[] eliminatedGenes = new int[8];
+        Arrays.fill(eliminatedGenes, 0);
+        for (Integer gene : genotype){
+            eliminatedGenes[gene]++;
+        }
+
+        int repeat = 0;
+        for (int i = 0; i < 8; i++){
+            if (eliminatedGenes[i] == 0){
+                while(repeat < 32){
+                    int randomGene = rand.nextInt(32);
+                    if (eliminatedGenes[genotype[randomGene]] != 1){
+                        genotype[randomGene] = i;
+                        break;
+                    }
+                    repeat++;
+                }
+            }
+        }
+
+        Arrays.sort(genotype);
+
         return genotype;
     }
 
@@ -56,15 +79,15 @@ public class Animal implements IMapElement {
     }
 
     public void autoTurn(){
-        int rnd = new Random().nextInt(this.genotype.length);
-        this.turn(this.genotype[rnd]);
+        int rand = new Random().nextInt(this.genotype.length);
+        this.turn(this.genotype[rand]);
     }
 
     public void move(){
-        Vector2D newVector = map.betterPosition(this.position.add(this.orientation.toUnitVector()));
-        if (map.canMoveTo(newVector)){
-            positionChanged(this.getPosition(), newVector);
-            this.position = newVector;
+        Vector2D vec = map.betterPosition(this.position.add(this.orientation.toUnitVector()));
+        if (map.canMoveTo(vec)){
+            positionChanged(this.getPosition(), vec);
+            this.position = vec;
             this.energy -= map.moveEnergy;
         }
     }
@@ -105,5 +128,67 @@ public class Animal implements IMapElement {
 
     public void eat(double addEnergy){
         this.energy += addEnergy;
+    }
+
+    public boolean canProcreate(){
+        return this.energy > (map.startEnergy / 2);
+    }
+
+    public Animal procreate(Animal other){
+        Vector2D childPosition = null;
+        Random rand = new Random();
+        int[] table = new int[]{-1,1};
+        for (int i = 0; i < 8; i++){
+            int childX = this.position.x + table[rand.nextInt(2)];
+            int childY = this.position.y + table[rand.nextInt(2)];
+            childPosition = map.betterPosition(new Vector2D(childX, childY));
+            if (map.objectAt(childPosition) == null){
+                break;
+            }
+            if (i == 7){
+                return null;
+            }
+        }
+
+        double childEnergy = this.energy / 4 + other.energy / 4;
+
+        Integer[] childGenotype = new Integer[32];
+        for (int i = 0; i < 11; i++){
+            childGenotype[i] = this.genotype[i];
+        }
+
+        for (int i = 11; i < 21; i++){
+            childGenotype[i] = other.genotype[i];
+        }
+
+        for (int i = 21; i < 32; i++){
+            childGenotype[i] = this.genotype[i];
+        }
+        int[] eliminatedGenes = new int[8];
+        Arrays.fill(eliminatedGenes, 0);
+        for (Integer gen : childGenotype){
+            eliminatedGenes[gen]++;
+        }
+        int repeat = 0;
+        for (int i = 0; i < 8; i++){
+            if (eliminatedGenes[i] == 0){
+                while(repeat < 32){
+                    int randomGene = rand.nextInt(32);
+                    if (eliminatedGenes[childGenotype[randomGene]] != 1){
+                        childGenotype[randomGene] = i;
+                        break;
+                    }
+                    repeat++;
+                }
+
+            }
+        }
+
+        Arrays.sort(childGenotype);
+
+        Animal child = new Animal(childPosition, childGenotype, this.map);
+
+        child.turn(rand.nextInt(8));
+        return child;
     }
 }

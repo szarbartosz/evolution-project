@@ -1,4 +1,4 @@
-public class Grass implements IMapElement{
+public class Grass implements IMapElement {
 
     private Vector2D position;
 
