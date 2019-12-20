@@ -5,23 +5,31 @@ import visualization.RenderPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 public class Simulation {
     WorldMap map;
+    private int numberOfDays;
+    private int refreshTime;
+
     int day;
-    int numberOfAnimals = 20;
-    int totalNumberOfAnimals = 20;
+    int numberOfAnimals;
+    int totalNumberOfAnimals;
     int maxNumberOfAnimals;
 
-
-    public Simulation(Vector2D upperRight){
-        this.map = new WorldMap(upperRight);
+    public Simulation(int numberOfDays, int numberOfStartAnimals, int refreshTime){
+        this.numberOfDays = numberOfDays;
+        this.numberOfAnimals = numberOfStartAnimals;
+        this.refreshTime = refreshTime;
         this.day = 0;
-    }
-
-    public Simulation(WorldMap map){
-        this.map = map;
-        this.day = 0;
+        this.totalNumberOfAnimals = numberOfStartAnimals;
+        this.maxNumberOfAnimals = numberOfStartAnimals;
+        JSON mapDetails = new JSON();
+        Random random = new Random();
+        this.map = new WorldMap(new Vector2D(mapDetails.width - 1, mapDetails.height - 1), mapDetails.startEnergy, mapDetails.moveEnergy, mapDetails.plantEnergy, mapDetails.jungleRatio);
+        for (int i = 0; i < numberOfStartAnimals; i++){
+            map.place(new Animal(new Vector2D(random.nextInt(map.width), random.nextInt(map.height)), map));
+        }
     }
 
     public void nextDay(){
@@ -50,11 +58,11 @@ public class Simulation {
         }
     }*/
 
-    public void startSimulation(int numberOfDays) throws InterruptedException {
+    public void startSimulation() throws InterruptedException {
         System.out.println("Day: " + day);
         System.out.println(map.drawMap());
         JFrame frame = new JFrame();
-        frame.setSize(1000,500);
+        frame.setSize(1200,550);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         RenderPanel panel = new RenderPanel(map, frame);
@@ -68,7 +76,7 @@ public class Simulation {
         JLabel totalPigsCount = new JLabel("Total number of animals that ever existed on the map: " + this.totalNumberOfAnimals);
         JLabel maxNumberOfPigs = new JLabel("Max number of animals that existed on the map at the same time: " + this.maxNumberOfAnimals);
 
-        infoPanel.setSize(300,500);
+        infoPanel.setSize((int) (0.5 * frame.getWidth()),500);
         infoPanel.add(dayCount);
         infoPanel.add(pigsCount);
         infoPanel.add(totalPigsCount);
