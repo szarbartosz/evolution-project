@@ -23,11 +23,17 @@ public class Animal implements IMapElement {
     }
 
     public Animal(Vector2D initialPosition, Integer[] genotype, WorldMap map){
+        this(initialPosition, genotype, map, map.startEnergy);
+    }
+
+    public Animal(Vector2D initialPosition, Integer[] genotype, WorldMap map, double startEnergy){
         this.position = map.betterPosition(initialPosition);
         this.orientation = Direction.N;
-        this.energy = map.startEnergy;
+        this.energy = startEnergy;
         this.genotype = genotype;
         this.map = map;
+        int rand = new Random().nextInt(8);
+        this.turn(rand);
     }
 
     private static Integer[] randomGenotype(){
@@ -140,20 +146,18 @@ public class Animal implements IMapElement {
     }
 
     public Animal procreate(Animal other){
-        Vector2D childPosition = null;
-        Random rand = new Random();
-        int[] table = new int[]{-1,1};
-        for (int i = 0; i < 8; i++){
-            int childX = this.position.x + table[rand.nextInt(2)];
-            int childY = this.position.y + table[rand.nextInt(2)];
-            childPosition = map.betterPosition(new Vector2D(childX, childY));
-            if (map.objectAt(childPosition) == null){
-                break;
-            }
-            if (i == 7){
-                return null;
+        Random random = new Random();
+        List <Vector2D> emptyPositions = new ArrayList<>();
+        for (Direction azimuth : Direction.values()){
+            Vector2D newPosition = this.map.betterPosition(this.position.add(azimuth.toUnitVector()));
+            if (this.map.objectAt(newPosition) == null){
+                emptyPositions.add(newPosition);
             }
         }
+
+        if (emptyPositions.isEmpty()) return null;
+
+        Vector2D childPosition = emptyPositions.get(random.nextInt(emptyPositions.size()));
 
         double childEnergy = this.energy / 4 + other.energy / 4;
 
@@ -178,7 +182,7 @@ public class Animal implements IMapElement {
         for (int i = 0; i < 8; i++){
             if (eliminatedGenes[i] == 0){
                 while(repeat < 32){
-                    int randomGene = rand.nextInt(32);
+                    int randomGene = random.nextInt(32);
                     if (eliminatedGenes[childGenotype[randomGene]] != 1){
                         childGenotype[randomGene] = i;
                         break;
@@ -191,9 +195,7 @@ public class Animal implements IMapElement {
 
         Arrays.sort(childGenotype);
 
-        Animal child = new Animal(childPosition, childGenotype, this.map);
-
-        child.turn(rand.nextInt(8));
+        Animal child = new Animal(childPosition, childGenotype, this.map, childEnergy);
         return child;
     }
 }

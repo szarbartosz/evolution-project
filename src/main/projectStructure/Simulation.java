@@ -64,9 +64,9 @@ public class Simulation {
 
         JPanel infoPanel = new JPanel();
         JLabel dayCount = new JLabel("Day: " + this.day);
-        JLabel pigsCount = new JLabel("Number of animals: " + this.numberOfAnimals);
-        JLabel totalPigsCount = new JLabel("Total number of animals: " + this.totalNumberOfAnimals);
-        JLabel maxNumberOfPigs = new JLabel("Max number of animals: " + this.maxNumberOfAnimals);
+        JLabel pigsCount = new JLabel("Number of animals on the map: " + this.numberOfAnimals);
+        JLabel totalPigsCount = new JLabel("Total number of animals that ever existed on the map: " + this.totalNumberOfAnimals);
+        JLabel maxNumberOfPigs = new JLabel("Max number of animals that existed on the map at the same time: " + this.maxNumberOfAnimals);
 
         infoPanel.setSize(300,500);
         infoPanel.add(dayCount);
@@ -94,6 +94,4 @@ public class Simulation {
             java.util.concurrent.TimeUnit.MILLISECONDS.sleep(20);
         }
     }
-
-
 }
