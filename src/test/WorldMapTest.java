@@ -64,7 +64,7 @@ public class WorldMapTest {
     }
 
     @Test
-    public void growGrassUnderAnimalTest(){
+    public void grassUnderAnimalTest(){
         WorldMap map = new WorldMap(new Vector2D(8,8));
         map.place(new Animal(new Vector2D(4,4), map));
         for (int i = 0; i < 10000; i++){

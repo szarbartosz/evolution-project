@@ -1,8 +1,7 @@
+import features.Vector2D;
 import org.junit.Assert;
 import org.junit.Test;
 import projectStructure.Animal;
-import features.Direction;
-import features.Vector2D;
 import projectStructure.WorldMap;
 
 import java.util.Arrays;
@@ -24,31 +23,13 @@ public class AnimalTest {
     }
 
     @Test
-    public void turnTest(){
-        duck.turn(2);
-        ant.turn(3);
-        snail.turn(5);
-        parrot.turn(6);
-        Assert.assertEquals(duck.getOrientation(), Direction.E);
-        Assert.assertEquals(ant.getOrientation(), Direction.SE);
-        Assert.assertEquals(snail.getOrientation(), Direction.SW);
-        Assert.assertEquals(parrot.getOrientation(), Direction.W);
-    }
-
-    @Test
-    public void moveTest(){
-        duck.turn(2);
-        ant.turn(3);
-        snail.turn(5);
-        parrot.turn(6);
-        duck.move();
-        ant.move();
-        snail.move();
-        parrot.move();
-        Assert.assertEquals(duck.getPosition(),new Vector2D(3,2));
-        Assert.assertEquals(ant.getPosition(),new Vector2D(3,1));
-        Assert.assertEquals(snail.getPosition(),new Vector2D(9,9));
-        Assert.assertEquals(parrot.getPosition(),new Vector2D(24,25));
+    public void autoTurnTest(){
+        WorldMap map = new WorldMap(new Vector2D(8,8));
+        Integer[] genotype = new Integer[]{0,1,3,5,1};
+        Animal fox = new Animal(new Vector2D(6,6), genotype, map);
+        System.out.println(fox);
+        fox.autoTurn();
+        System.out.println(fox);
     }
 
     @Test
@@ -70,38 +51,5 @@ public class AnimalTest {
                 Assert.assertTrue(eliminatedGenes[j]);
             }
         }
-    }
-
-    @Test
-    public void energyAndDeadTest(){
-        WorldMap map = new WorldMap(new Vector2D(6,6),10.0);
-        Animal snail = new Animal(new Vector2D(5,5), map);
-        Animal frog = new Animal(new Vector2D(6,0), map);
-        map.place(frog);
-        map.place(snail);
-        Assert.assertEquals(10.0, snail.getEnergy(), 0.01);
-        snail.move();
-        Assert.assertEquals(8.0, snail.getEnergy(), 0.01);
-        snail.move();
-        Assert.assertEquals(6.0, snail.getEnergy(), 0.01);
-        snail.move();
-        Assert.assertEquals(4.0, snail.getEnergy(), 0.01);
-        snail.move();
-        Assert.assertEquals(2.0, snail.getEnergy(), 0.01);
-        snail.move();
-        Assert.assertEquals(0.0, snail.getEnergy(), 0.01);
-        Assert.assertEquals(snail, map.objectAt(new Vector2D(5,3)));
-        map.clearDeadAnimals();
-        Assert.assertNotEquals(snail, map.objectAt(new Vector2D(5,3)));
-        Assert.assertEquals(frog, map.objectAt(new Vector2D(6,0)));
-        frog.move();
-        frog.move();
-        frog.move();
-        frog.move();
-        frog.move();
-        Animal turtle = new Animal(new Vector2D(6,5), map);
-        map.place(turtle);
-        map.clearDeadAnimals();
-        Assert.assertEquals(turtle, map.objectAt(new Vector2D(6,5)));
     }
 }

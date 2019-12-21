@@ -29,11 +29,12 @@ public class Animal implements IMapElement {
     public Animal(Vector2D initialPosition, Integer[] genotype, WorldMap map, double startEnergy){
         this.position = map.betterPosition(initialPosition);
         this.orientation = Direction.N;
-        this.energy = startEnergy;
+        this.energy = map.startEnergy;
         this.genotype = genotype;
         this.map = map;
         int rand = new Random().nextInt(8);
         this.turn(rand);
+        this.energy = startEnergy;
     }
 
     private static Integer[] randomGenotype(){

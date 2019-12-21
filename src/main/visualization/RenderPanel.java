@@ -40,16 +40,16 @@ public class RenderPanel extends JPanel {
         this.heightScale = height / map.height;
 
         try {
-            this.animal = ImageIO.read(new File("src/img/Pig.png"));
-            this.animal2 = ImageIO.read(new File("src/img/Pig2.png"));
-            this.animal3 = ImageIO.read(new File("src/img/Pig3.png"));
-            this.animal4 = ImageIO.read(new File("src/img/Pig4.png"));
-            this.animal5 = ImageIO.read(new File("src/img/Pig5.png"));
-            this.animal5Plus = ImageIO.read(new File("src/img/Pig5plus.png"));
-            this.bush = ImageIO.read(new File("src/img/Bush.png"));
-            this.cactus = ImageIO.read(new File("src/img/SteppeBush.png"));
-            this.jungle = ImageIO.read(new File("src/img/Jungle.png"));
-            this.steppe = ImageIO.read(new File("src/img/steppe.png"));
+            this.animal = ImageIO.read(new File("src/img/animal.png"));
+            this.animal2 = ImageIO.read(new File("src/img/2animals.png"));
+            this.animal3 = ImageIO.read(new File("src/img/3animals.png"));
+            this.animal4 = ImageIO.read(new File("src/img/4animals.png"));
+            this.animal5 = ImageIO.read(new File("src/img/5animals.png"));
+            this.animal5Plus = ImageIO.read(new File("src/img/moreThan5animals.png"));
+            this.bush = ImageIO.read(new File("src/img/jungleBush.png"));
+            this.cactus = ImageIO.read(new File("src/img/savannahBush.png"));
+            this.jungle = ImageIO.read(new File("src/img/jungle.png"));
+            this.steppe = ImageIO.read(new File("src/img/savannah.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

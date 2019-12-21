@@ -16,18 +16,21 @@ public class Simulation {
     int numberOfAnimals;
     int totalNumberOfAnimals;
     int maxNumberOfAnimals;
+    private int bornAnimals;
+    private int deadAnimals;
 
-    public Simulation(int numberOfDays, int numberOfStartAnimals, int refreshTime){
-        this.numberOfDays = numberOfDays;
-        this.numberOfAnimals = numberOfStartAnimals;
-        this.refreshTime = refreshTime;
-        this.day = 0;
-        this.totalNumberOfAnimals = numberOfStartAnimals;
-        this.maxNumberOfAnimals = numberOfStartAnimals;
+    public Simulation(){
         JSON mapDetails = new JSON();
+        this.numberOfDays = mapDetails.days;
+        this.numberOfAnimals = mapDetails.animals;
+        this.refreshTime = mapDetails.refresh;
+        this.day = 0;
+        this.totalNumberOfAnimals = mapDetails.animals;
+        this.maxNumberOfAnimals = mapDetails.animals;
+
         Random random = new Random();
         this.map = new WorldMap(new Vector2D(mapDetails.width - 1, mapDetails.height - 1), mapDetails.startEnergy, mapDetails.moveEnergy, mapDetails.plantEnergy, mapDetails.jungleRatio);
-        for (int i = 0; i < numberOfStartAnimals; i++){
+        for (int i = 0; i < mapDetails.animals; i++){
             map.place(new Animal(new Vector2D(random.nextInt(map.width), random.nextInt(map.height)), map));
         }
     }
@@ -42,7 +45,9 @@ public class Simulation {
         day++;
         numberOfAnimals += bornAnimals - deadAnimals;
         totalNumberOfAnimals += bornAnimals;
-        if(numberOfAnimals > maxNumberOfAnimals){
+        this.deadAnimals += deadAnimals;
+        this.bornAnimals += bornAnimals;
+        if (numberOfAnimals > maxNumberOfAnimals){
             maxNumberOfAnimals = numberOfAnimals;
         }
     }
@@ -60,10 +65,9 @@ public class Simulation {
 
     public void startSimulation() throws InterruptedException {
         System.out.println("Day: " + day);
-        System.out.println(map.drawMap());
+        System.out.println(this.map.drawMap());
         JFrame frame = new JFrame();
-        frame.setSize(1200,550);
-        frame.setLocationRelativeTo(null);
+        frame.setSize(1600,840);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         RenderPanel panel = new RenderPanel(map, frame);
         frame.add(panel);
@@ -72,15 +76,19 @@ public class Simulation {
 
         JPanel infoPanel = new JPanel();
         JLabel dayCount = new JLabel("Day: " + this.day);
-        JLabel pigsCount = new JLabel("Number of animals on the map: " + this.numberOfAnimals);
-        JLabel totalPigsCount = new JLabel("Total number of animals that ever existed on the map: " + this.totalNumberOfAnimals);
-        JLabel maxNumberOfPigs = new JLabel("Max number of animals that existed on the map at the same time: " + this.maxNumberOfAnimals);
+        JLabel pigsCount = new JLabel("Number of animals: " + this.numberOfAnimals);
+        JLabel totalPigsCount = new JLabel("Total number of animals: " + this.totalNumberOfAnimals);
+        JLabel maxNumberOfPigs = new JLabel("Max number of animals: " + this.maxNumberOfAnimals);
+        JLabel bornAnimals = new JLabel("Born animals: 0");
+        JLabel deadAnimals = new JLabel( "Dead animals: 0");
 
         infoPanel.setSize((int) (0.5 * frame.getWidth()),500);
         infoPanel.add(dayCount);
         infoPanel.add(pigsCount);
         infoPanel.add(totalPigsCount);
         infoPanel.add(maxNumberOfPigs);
+        infoPanel.add(bornAnimals);
+        infoPanel.add(deadAnimals);
         infoPanel.setLayout(new GridLayout(20, 1));
         infoPanel.setVisible(true);
 
@@ -95,11 +103,15 @@ public class Simulation {
             System.out.println(map.drawMap());
             panel.repaint();
             System.out.println(this.numberOfAnimals);
-            pigsCount.setText("Number of animals on the map: " + this.numberOfAnimals);
+            pigsCount.setText("Number of animals: " + this.numberOfAnimals);
             dayCount.setText("Day: " + this.day);
-            totalPigsCount.setText("Total number of animals that ever existed on the map: " + this.totalNumberOfAnimals);
-            maxNumberOfPigs.setText("Max number of animals that existed on the map at the same time: " + this.maxNumberOfAnimals);
-            java.util.concurrent.TimeUnit.MILLISECONDS.sleep(20);
+            totalPigsCount.setText("Total number of animals: " + this.totalNumberOfAnimals);
+            maxNumberOfPigs.setText("Max number of animals: " + this.maxNumberOfAnimals);
+            deadAnimals.setText("Dead animals: " + this.deadAnimals);
+            bornAnimals.setText("Born animals: " + this.bornAnimals);
+            java.util.concurrent.TimeUnit.MILLISECONDS.sleep(this.refreshTime);
         }
     }
+
+
 }

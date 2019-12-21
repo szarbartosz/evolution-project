@@ -1,4 +1,4 @@
-package JSONServices;
+package visualization;
 
 import org.json.simple.JSONObject;
 
@@ -18,12 +18,15 @@ public class WriteJSON {
     {
         //parameters
         JSONObject details = new JSONObject();
-        details.put("width", "100");
-        details.put("height", "100");
+        details.put("width", "60");
+        details.put("height", "60");
         details.put("jungleRatio", "0.5");
-        details.put("startEnergy", "40");
+        details.put("startEnergy", "60");
         details.put("moveEnergy", "1");
-        details.put("plantEnergy", "2");
+        details.put("plantEnergy", "6");
+        details.put("days", "200");
+        details.put("animals", "400");
+        details.put("refresh", "50");
 
 
         try (FileWriter file = new FileWriter("simulationParameters.json")) {

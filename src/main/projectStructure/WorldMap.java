@@ -9,6 +9,8 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
     public Set<Grass> grassSet = new HashSet<>();
     private Map<Vector2D, List<Animal>> animalsMap = new HashMap<>();
     private Map<Vector2D, Grass> grassMap = new HashMap<>();
+    public Set<Vector2D> emptySpaces = new HashSet<>();
+    public Set<Vector2D> emptySpacesJungle = new HashSet<>();
 
     private final Vector2D upperRight;
     public final Double startEnergy;
@@ -52,6 +54,17 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
         /*this.jungleLowerLeft = new Vector2D((this.width - jungleWidth) / 2, (this.height - jungleHeight) / 2);
         this.jungleUpperRight = new Vector2D(jungleLowerLeft.x + jungleWidth - 1, jungleLowerLeft.y + jungleWidth - 1);*/
         calculateJunglePosition();
+
+        for (int x = 0; x <= upperRight.x; x++){
+            for (int y = 0; y <= upperRight.y; y++){
+                if (isPositionJungle(new Vector2D(x, y))){
+                    emptySpacesJungle.add(new Vector2D(x, y));
+                }
+                else{
+                    emptySpaces.add(new Vector2D(x, y));
+                }
+            }
+        }
     }
 
     /*
@@ -123,6 +136,15 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
     public boolean place(Animal animal){
         Vector2D animalPosition = animal.getPosition();
         List<Animal> tmp = animalsMap.get(animalPosition);
+        if (objectAt(animalPosition) == null){
+            if (isPositionJungle(animalPosition)){
+                emptySpacesJungle.remove(animalPosition);
+            }
+            else{
+                emptySpaces.remove(animalPosition);
+            }
+
+        }   //ok
         if (tmp == null){
             tmp = new ArrayList<>();
             tmp.add(animal);
@@ -130,6 +152,7 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
         }
         else{
             tmp.add(animal);
+            tmp.sort(Comparator.comparing((Animal::getEnergy)));
         }
         animalsList.add(animal);
         animal.addObserver(this);
@@ -184,72 +207,62 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
             tmp.add(animal);
             tmp.sort(Comparator.comparing((Animal::getEnergy)));
         }
+        if (objectAt(oldPosition) == null){
+            if (isPositionJungle(oldPosition)){
+                emptySpacesJungle.add(oldPosition);
+            }
+            else{
+                emptySpaces.add(oldPosition);
+            }
+
+        }
+        if (isPositionJungle(newPosition)){
+            emptySpacesJungle.remove(newPosition);
+        }
+        else{
+            emptySpaces.remove(newPosition);
+        }
+
     }
 
     public void putGrass(Vector2D position){
         Grass grass = new Grass(position);
         grassMap.put(position, grass);
         grassSet.add(grass);
+        if (isPositionJungle(position)){
+            emptySpacesJungle.remove(position);
+        }
+        else{
+            emptySpaces.remove(position);
+        }
+
     }
 
     public void generateGrass(){
-        Random rand = new Random();
-        int iterations = 0;
-        int tooManyTimes = (jungleUpperRight.x - jungleLowerLeft.x) * (jungleUpperRight.y - jungleLowerLeft.y);
-        while (iterations < tooManyTimes ){
-            int jungleGrassX = rand.nextInt(jungleUpperRight.x - jungleLowerLeft.x + 1) + jungleLowerLeft.x;
-            int jungleGrassY = rand.nextInt(jungleUpperRight.y - jungleLowerLeft.y + 1) + jungleLowerLeft.y;
-            Vector2D jungleGrassPosition = new Vector2D(jungleGrassX, jungleGrassY);
-            if (this.objectAt(jungleGrassPosition) == null){
-                putGrass(new Vector2D(jungleGrassX, jungleGrassY));
-                break;
+        if (emptySpacesJungle.size() != 0){
+            int item = new Random().nextInt(emptySpacesJungle.size());
+            int i = 0;
+            for (Vector2D position : emptySpacesJungle){
+                if (i == item){
+                    putGrass(position);
+                    break;
+                }
+                i++;
             }
-            iterations++;
         }
-        iterations = 0;
-        tooManyTimes = (upperRight.x * upperRight.y) - tooManyTimes;
-        int maxX = 0;
-        int maxY = 0;
-        int minY = 0;
-        int minX = 0;
 
-        while (iterations < tooManyTimes){
-            //steppe has 4 segments and following switch chooses one of them
-            switch(rand.nextInt(4)){
-                case 0:
-                    minX = 0;
-                    maxX = upperRight.x;
-                    minY = 0;
-                    maxY = jungleLowerLeft.y;
+        if (emptySpaces.size() != 0){
+            int item2 = new Random().nextInt(emptySpaces.size());
+            int i2 = 0;
+            for (Vector2D position : emptySpaces){
+                if (i2 == item2){
+                    putGrass(position);
                     break;
-                case 1:
-                    minX = 0;
-                    maxX = jungleLowerLeft.x;
-                    minY = jungleLowerLeft.y;
-                    maxY = jungleUpperRight.y;
-                    break;
-                case 2:
-                    minX = jungleUpperRight.x;
-                    maxX = upperRight.x;
-                    minY = jungleLowerLeft.y;
-                    maxY = jungleUpperRight.y;
-                    break;
-                case 3:
-                    minX = 0;
-                    maxX = upperRight.x;
-                    minY = jungleUpperRight.y;
-                    maxY = upperRight.y;
-                    break;
+                }
+                i2++;
             }
-            int jungleGrassX = rand.nextInt(maxX - minX + 1) + minX;
-            int jungleGrassY = rand.nextInt(maxY - minY + 1) + minY;
-            Vector2D jungleGrassPosition = new Vector2D(jungleGrassX, jungleGrassY);
-            if (this.objectAt(jungleGrassPosition) == null){
-                putGrass(new Vector2D(jungleGrassX, jungleGrassY));
-                break;
-            }
-            iterations++;
         }
+
     }
 
     public void turnAllAnimals(){
@@ -275,10 +288,21 @@ public class WorldMap implements IWorldMap, IPositionChangeObserver {
                 tmp.remove(animal);
                 animalsList.remove(i);
                 killCount++;
+                if (objectAt(animal.getPosition()) == null){
+                    if (isPositionJungle(animal.getPosition())){
+                        emptySpacesJungle.add(animal.getPosition());
+                    }
+                    else {
+                        emptySpaces.add(animal.getPosition());
+                    }
+
+                }
             }else{
                 i++;
             }
+
         }
+
         return killCount;
     }
 
