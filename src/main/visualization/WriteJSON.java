@@ -5,13 +5,6 @@ import org.json.simple.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 
-        /*Rozmiar mapy (width, height)
-        ilość energii początkowej zwierząt (startEnergy)
-        ilość energii traconej w każdym dniu (moveEnergy)
-        ilość energii zyskiwanej przy zjedzeniu rośliny (plantEnergy)
-        proporcje dżungli do sawanny (jugnleRatio)
-        */
-
 public class WriteJSON {
     @SuppressWarnings("unchecked")
     public static void main( String[] args )
