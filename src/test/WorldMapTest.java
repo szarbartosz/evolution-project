@@ -1,7 +1,8 @@
+import features.Vector2D;
 import org.junit.Assert;
 import org.junit.Test;
 import projectStructure.Animal;
-import features.Vector2D;
+import projectStructure.Grass;
 import projectStructure.WorldMap;
 
 import java.util.List;
@@ -60,5 +61,17 @@ public class WorldMapTest {
         Animal fox = new Animal(new Vector2D(7, 7),map);
         map.place(fox);
         Assert.assertEquals(fox, map.objectAt(new Vector2D(0,0)));
+    }
+
+    @Test
+    public void growGrassUnderAnimalTest(){
+        WorldMap map = new WorldMap(new Vector2D(8,8));
+        map.place(new Animal(new Vector2D(4,4), map));
+        for (int i = 0; i < 10000; i++){
+            for (Grass grass : map.grassSet){
+                Assert.assertNotEquals(new Vector2D(4,4), grass.getPosition());
+            }
+            map.generateGrass();
+        }
     }
 }

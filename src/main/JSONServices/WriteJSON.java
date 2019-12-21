@@ -18,10 +18,10 @@ public class WriteJSON {
     {
         //parameters
         JSONObject details = new JSONObject();
-        details.put("width", "200");
+        details.put("width", "100");
         details.put("height", "100");
         details.put("jungleRatio", "0.5");
-        details.put("startEnergy", "10");
+        details.put("startEnergy", "40");
         details.put("moveEnergy", "1");
         details.put("plantEnergy", "2");
 
